@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+
+<link rel="stylesheet" type="text/css" href="/static/feed/feed.css" />
+
+    {% if feeds %}
+        <div id="content-cards-wrap" class=""content-cards-wrap"">
+            {% for feed in feeds %}
+            <div class="card" style="width:18rem; float: left; margin: 10px">
+            <div class="card-body">
+            <h5 class="card-title">{{ feed.name }}</h5>
+            <h6 class="card-subtitle mb-2 text-muted">Author: {{ feed.author }}</h6>
+            <p class="card-text">{{ feed.desc }}</p>
+            <a href="/feed/{{ feed.id }}" class="card-link">See more</a>
+            <a href="/category" class="card-link">Category</a>
+            </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <h3>你还没有订阅哦，快去订阅一个吧</h3>
+    {% endif %}
+
+{% endblock %}

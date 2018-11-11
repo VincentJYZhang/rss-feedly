@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Feeds
+{% endblock %}
+
+{% block content %}
+
+<link rel="stylesheet" type="text/css" href="/static/feed/feed.css" />
+
+    <div id="feed-wrap" style="width: 85%; margin: auto auto">
+    {% if feeds %}
+        <div id="content-cards-wrap" class="content-cards-wrap">
+            {% for feed in feeds %}
+            <div class="card" style="width:18rem; float: left; margin: 10px">
+            <div class="card-body">
+            <h5 class="card-title">{{ feed.name }}</h5>
+                <h6 class="card-subtitle mb-2 text-muted">Update: <span style="font-size: 13px">{{ feed.last_fetch }}</span></h6>
+            <p class="card-text">{{ feed.desc }}</p>
+            <a href="/category/feed/{{ feed.id }}" class="card-link">See more</a>
+            <a href="/category" class="card-link">Category</a>
+            </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="jumbotron">
+            <h1 class="display-4">Ops! 你竟然没有任何订阅？</h1>
+            <p class="lead">看来你是个新手，要不就是懒</p>
+            <hr class="my-4">
+            <p>既然如此，要不要尝试按下按钮返回主页来添加订阅？</p>
+            <p class="lead">
+                <a class="btn btn-primary btn-lg" href="/" role="button">返回主页</a>
+            </p>
+        </div>
+    {% endif %}
+    </div>
+
+{% endblock %}

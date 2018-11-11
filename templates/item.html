@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Items
+{% endblock %}
+
+{% block content %}
+
+    <style type="text/css">
+        h2{margin: 30px}
+        h3{margin: 20px}
+        p{margin: 15px;}
+        img{max-width: 80%; margin: auto auto}
+
+    </style>
+    {% if item %}
+        <div id="item-wrap" style="width: 60%; margin: auto auto; margin-bottom: 100px">
+            <div id="item-title">
+                <h1 style="margin-bottom: 40px">{{ item.title }}</h1>
+            </div>
+
+            <div id="item-details" style="margin-bottom: 50px; margin-left: 20px">
+                <dl class="row">
+
+                    <dt class="col-sm-3">Author</dt>
+                    <dd class="col-sm-9">{{ item.author }}</dd>
+
+                    <dt class="col-sm-3">Pub Time</dt>
+                    <dd class="col-sm-9">{{ item.pub_time }}</dd>
+
+                </dl>
+            </div>
+
+            {% autoescape false %}
+            {{ item.content }}
+            {% endautoescape %}
+        </div>
+    {% else %}
+        <div class="jumbotron">
+            <h1 class="display-4">Ops! 貌似发生了点错误</h1>
+            <p class="lead">你可以联系管理员来解决这个问题，不过管理员喜欢睡觉不喜欢被打扰。</p>
+            <hr class="my-4">
+            <p>当你直接使用链接访问了一个空的items时，会发生这种情况，要不尝试按下按钮返回主页？</p>
+            <p class="lead">
+                <a class="btn btn-primary btn-lg" href="/category" role="button">返回主页</a>
+            </p>
+        </div>
+    {% endif %}
+
+{% endblock %}

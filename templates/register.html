@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>register</title>
+
+    <link rel="stylesheet" type="text/css" href="/static/login/login.css" />
+    <script type="text/javascript" src="/static/common/js/jquery.js"></script>
+    <script type="text/javascript" src="/static/login/login.js"></script>
+    <script>
+        function login() {
+
+            var username = document.getElementById("username");
+            var pass = document.getElementById("password");
+            var usermail = document.getElementById("usermail")
+
+            if (username.value == "") {
+
+                alert("请输入用户名");
+
+            } else if (pass.value == "") {
+
+                alert("请输入密码");
+
+            }else if (usermail == ""){
+
+                alert("请输入邮箱");
+
+            } else {
+                $.ajax({
+                    url: "/api/user/register",
+                    headers: {
+                        Accept: "application/json; charset=utf-8",
+                        user_mail: usermail.value,
+                        user_pwd: pass.value,
+                        user_nickname: username.value
+                    },
+                    type: "post",
+                    success: function(data) {
+                        if (data.code == "1") {
+                            alert("注册成功！")
+                            window.location.href = "/login"
+                        } else if (data.code == "-1") {
+                            alert("邮箱已注册！")
+                        } else if (data.code == "-2") {
+                            alert("不符合邮箱格式！")
+                        } else {
+                            alert("注册失败，请检查网络连接再试。")
+                        }
+                    },
+                });
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <div id="login_frame" style="height: 240px">
+
+        <form method="post" action="/static/login/login.js">
+
+            <p><label class="label_input">邮箱</label><input type="text" id="usermail" class="text_field" /></p>
+            <p><label class="label_input">密码</label><input type="text" id="password" class="text_field" /></p>
+            <p><label class="label_input">昵称</label><input type="text" id="username" class="text_field" /></p>
+
+            <div id="login_control">
+                <input type="button" id="btn_login" value="注册" onclick="login();" />
+            </div>
+        </form>
+    </div>
+
+</body>
+
+</html>

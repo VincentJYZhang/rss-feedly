@@ -1,0 +1,72 @@
+body {
+    margin: 0;
+    padding: 0;
+    width: 100%
+}
+
+.top-bar {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 60px;
+    background-color: rgb(230, 230, 230);
+}
+
+.web-logo {
+    float: left;
+    margin-left: 32px;
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: sans-serif;
+    font-size: 25px;
+}
+
+.user-name {
+    float: right;
+    margin-right: 15px;
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 18px;
+}
+
+.user-mail {
+    float: right;
+    margin-right: 15px;
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 18px;
+}
+
+.log-out {
+    float: right;
+    margin-right: 30px;
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 18px;
+}
+
+.log-in {
+    float: right;
+    margin-right: 30px;
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 18px;
+}
+
+#content {
+    width: 85%;
+    margin-top: 20px;
+}
+
+#log-in:hover {
+    text-decoration: underline;
+}
+
+#log-out:hover{
+    text-decoration: underline;
+}

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>login</title>
+
+    <link rel="stylesheet" type="text/css" href="/static/login/login.css" />
+    <script type="text/javascript" src="/static/common/js/jquery.js"></script>
+    <script type="text/javascript" src="/static/login/login.js"></script>
+    <script>
+        function login() {
+
+            var username = document.getElementById("username");
+            var pass = document.getElementById("password");
+
+            if (username.value == "") {
+
+                alert("请输入用户名");
+
+            } else if (pass.value == "") {
+
+                alert("请输入密码");
+
+            } else {
+                $.ajax({
+                    url: "/api/user/confirm",
+                    headers: {
+                        Accept: "application/json; charset=utf-8",
+                        user_mail: username.value,
+                        user_pwd: pass.value
+                    },
+                    type: "get",
+                    success: function(data) {
+                        if (data.code == "1") {
+                            window.location.href = "/category"
+                        } else {
+                            alert("用户名或密码不正确！")
+                        }
+                    },
+                });
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <div id="login_frame">
+
+        <div>
+            <h2 style="margin: auto auto; margin-bottom: 30px"> Rss Me Feedly </h2>
+        </div>
+
+        <form method="post" action="/static/login/login.js">
+
+            <p><label class="label_input">用户名</label><input type="text" id="username" class="text_field" /></p>
+            <p><label class="label_input">密码</label><input type="password" id="password" class="text_field"  /></p>
+
+            <script>
+
+                $("#login_frame").keyup(function(e){
+                    var key = e.which;
+                    if(key==13){
+                        login();
+                    }
+                });
+
+            </script>
+
+
+            <div id="login_control">
+                <input type="button" id="btn_login" value="登录" onclick="login();" />
+                <a id="register" href="/register">没有账号？注册</a>
+            </div>
+        </form>
+    </div>
+
+</body>
+
+</html>

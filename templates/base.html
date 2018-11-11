@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>{% block title %}{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="/static/common/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="/static/base/base.css" />
+    <script type="text/javascript" src="/static/common/js/jquery.js"></script>
+    <script type="text/javascript" src="/static/common/js/bootstrap.js"></script>
+
+</head>
+
+<body>
+
+    <div class="top-bar">
+        <div class="web-logo" id="web-logo" style="cursor: pointer">Rss Me Feedly - Find Information You Really Want.</div>
+        <script>
+            document.getElementById("web-logo").onclick = function () {
+                window.location.href = "/";
+            };
+        </script>
+
+        {% if usermail %}
+        <div class="log-out" id="log-out" style="cursor: pointer">log out</div>
+            <script>
+            document.getElementById("log-out").onclick = function () {
+                $.ajax({
+                    url: "/api/user/logout",
+                    type: "get",
+                    success: function(data) {
+                        window.location.href = "/login"
+                    },
+                });
+            };
+            </script>
+        <div class="user-mail">{{usermail}}</div>
+        {% else %}
+        <div class="log-in" id="log-in" style="cursor: pointer">log in</div>
+            <script>
+            document.getElementById("log-in").onclick = function () {
+                window.location.href = "/login"
+            };
+            </script>
+        {% endif %} {% if username %}
+        <div class="user-name">{{username}}</div>
+        {% endif %}
+
+    </div>
+
+    <div id="content" style="width: 85%; margin-top: 40px; margin-left: 30px; margin-right: 30px">
+    {% block content %}{% endblock %}
+    </div>
+</body>
+
+</html>

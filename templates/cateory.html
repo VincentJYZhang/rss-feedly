@@ -1,0 +1,217 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Category
+{% endblock %}
+
+{% block content %}
+
+    <style type="text/css">
+        li {cursor: pointer}
+        li:hover {
+            text-decoration: underline;
+        }
+        .deleteFeedById:hover {
+            text-decoration: underline;
+        }
+    </style>
+
+<link rel="stylesheet" type="text/css" href="/static/category/category.css" />
+    <div id="category-wrap">
+    <div id="category-guide" style="width:20%; float: left">
+    <div id="accordion">
+    {% for category in categories %}
+        <div class="card" id="card{{ category.id }}">
+            <div class="card-header" id="heading{{ category.id }}">
+                <h5 class="mb-0">
+                <button class="btn btn-link" data-toggle="collapse" data-target="#collapse{{ category.id }}" aria-expanded="true" aria-controls="collapse{{ category.id }}">
+                    <span style="font-size: 20px">{{ category.name }}</span>
+                </button>
+                </h5>
+            </div>
+            {% if cate_id %}
+                {% if category.id == cate_id %}
+                    <div id="collapse{{ category.id }}" class="collapse show" aria-labelledby="heading{{ category.id }}" data-parent="#accordion">
+                {% else %}
+                    <div id="collapse{{ category.id }}" class="collapse" aria-labelledby="heading{{ category.id }}" data-parent="#accordion">
+                {% endif %}
+            {% else %}
+                <div id="collapse{{ category.id }}" class="collapse" aria-labelledby="heading{{ category.id }}" data-parent="#accordion">
+            {% endif %}
+
+                <div class="card-body">
+                <ul>
+                {% for feed in category.feeds %}
+                    <li style="margin-bottom: 5px" id="{{ category.id }}-{{ feed.id }}">{{ feed.name }}</li>
+                    <script>
+                    document.getElementById("{{ category.id }}-{{ feed.id }}").onclick = function () {
+                        window.location.href = "/category/{{ category.id }}/feed/{{ feed.id }}"
+                    };
+                    </script>
+                {% endfor %}
+                    <li style="margin-bottom: 5px" id="new{{ category.id }}">新增</li>
+                    <script>
+                        document.getElementById("new{{ category.id }}").onclick = function () {
+                            var feed_url = prompt("请输入新Rss源的地址","http://blog.sina.com.cn/rss/1286528122.xml");
+
+                            if (feed_url == "") {
+                                alert("地址不能为空");
+                            }
+
+                            if (feed_url != null && feed_url != "") {
+                                $.ajax({
+                                    url: "/api/category/{{ category.id }}",
+                                    headers: {
+                                        Accept: "application/json; charset=utf-8",
+                                        url: feed_url
+                                    },
+                                    type: "post",
+                                    success: function (data) {
+                                        if (data.code == "1") {
+                                            window.location.reload();
+                                        } else {
+                                            alert("地址不正确，请重新尝试。")
+                                        }
+                                    },
+                                });
+                            }
+                        };
+                    </script>
+                <li style="margin-bottom: 5px" id="delete{{ category.id }}">删除分类</li>
+
+                <script>
+                        document.getElementById("delete{{ category.id }}").onclick = function () {
+                            var r=confirm("确认删除分类 {{ category.name }}？");
+                            if (r == true)
+                            {
+                                $.ajax({
+                                    url: "/api/category/{{ category.id }}",
+                                    headers: {
+                                        Accept: "application/json; charset=utf-8"
+                                    },
+                                    type: "delete",
+                                    success: function(data) {
+                                        if (data.code == "1") {
+                                            alert("删除成功。");
+                                            window.location.reload();
+                                        } else {
+                                            alert("删除失败，请检查网络重试。")
+                                        }
+                                    },
+                                });
+                            }
+                        };
+                    </script>
+
+                </ul>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+
+    <div class="card" id="card-1">
+            <div class="card-header" id="heading-1">
+                <h5 class="mb-0">
+                <button class="btn btn-link" id="addCategory" data-toggle="collapse" data-target="#collapse-1" aria-expanded="true" aria-controls="collapse-1">
+                    <span style="font-size: 20px">+ 增加分类</span>
+                </button>
+                    <script>
+                        document.getElementById("addCategory").onclick = function () {
+                            var cate_name = prompt("请输入新分类的名字（目前只支持英文分类名）","news");
+                            if (cate_name != null && cate_name != "")
+                            {
+                                $.ajax({
+                                    url: "/api/category",
+                                    headers: {
+                                        Accept: "application/json; charset=utf-8",
+                                        name: cate_name
+                                    },
+                                    data: {
+                                        name: cate_name
+                                    },
+                                    type: "post",
+                                    success: function(data) {
+                                        if (data.code === "1") {
+                                            alert("添加成功");
+                                            window.location.reload();
+                                        } else if (data.code === "-1") {
+                                            alert("请先登陆再尝试");
+                                        } else if (data.code === "-2") {
+                                            alert("已有该分类。");
+                                        } else {
+                                            alert("增加分类失败，请检查网络重试。");
+                                        }
+                                    },
+                                });
+                            }
+                            else{
+                                alert("分类名不能为空。")
+                            }
+                        };
+                    </script>
+                </h5>
+            </div>
+    </div>
+    </div>
+    </div>
+
+    <div id="item-wrap" style="float: left; width: 75%; margin-left: 50px">
+    {% if items %}
+        <div id="feed-summary" style="margin:10px">
+            <h2>{{ feed_name }} <span id="deleteFeedById{{ feed_id }}" class="deleteFeedById" style="cursor: pointer;font-size: 15px; margin-left: 20px">[删除]</span></h2>
+
+            <script>
+                document.getElementById("deleteFeedById{{ feed_id }}").onclick = function () {
+                    var r=confirm("确认从分类中删除该订阅？");
+                    if (r == true)
+                    {
+                        $.ajax({
+                            url: "/api/category/{{ cate_id }}/feed/{{ feed_id }}",
+                            headers: {
+                                Accept: "application/json; charset=utf-8"
+                            },
+                            type: "delete",
+                            success: function(data) {
+                                if (data.code == "1") {
+                                    alert("删除成功。");
+                                    window.location.reload();
+                                } else {
+                                    alert("删除失败，请检查网络重试。")
+                                }
+                            },
+                        });
+                    }
+                };
+            </script>
+
+
+
+            <h3>{{ feed_desc }}</h3>
+        </div>
+        <div id="content-cards-wrap" class="content-cards-wrap">
+            {% for item in items %}
+            <div class="card" style="width:18rem; float: left; margin: 10px">
+            <div class="card-body">
+            <h5 class="card-title" style="overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">{{ item.title }}</h5>
+                <h6 class="card-subtitle mb-2 text-muted">作者：<span style="font-size: 13px">{{ item.author }}</span></h6>
+            <p class="card-text">发布时间：{{ item.pub_time }}</p>
+            <a href="/item/{{ item.id }}" class="card-link">See more</a>
+            <a href="/feed" class="card-link">Feed</a>
+            </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+
+        <div class="jumbotron jumbotron-fluid">
+        <div class="container">
+        <h1 class="display-4">欢迎来到 Rss Me！</h1>
+        <p class="lead" style="margin-top:40px; font-size: 30px">分类可以更清晰的帮助您整理信息，请在左侧选择一个Rss信息源</p>
+        </div>
+        </div>
+
+    {% endif %}
+    </div>
+    </div>
+
+{% endblock %}
